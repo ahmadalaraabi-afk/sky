@@ -20,11 +20,36 @@ padding:40px;
 <p>📍 مكة المكرمة</p>
 
 <h3>☀️ الشمس</h3>
-<p>المنزلة الفلكية: سعد الأخبية</p>
-<p>المنزلة التراثية: سعد السعود</p>
+<p id="suninfo">جارٍ الحساب...</p>
 
 <h3>🌙 القمر</h3>
-<p>منزلة القمر: الطرف</p>
+<p id="mooninfo">جارٍ الحساب...</p>
+
+<script>
+// إحداثيات مكة
+const lat = 21.3891;
+const lon = 39.8579;
+
+// جلب وقت الشروق
+fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`)
+.then(res=>res.json())
+.then(data=>{
+let sunrise = new Date(data.results.sunrise);
+
+// قبل الشروق بساعة
+let sunTime = new Date(sunrise.getTime() - 60*60*1000);
+
+// بعد الشروق بساعتين
+let moonTime = new Date(sunrise.getTime() + 2*60*60*1000);
+
+document.getElementById("suninfo").innerHTML =
+"الحساب يتم قبل الشروق بساعة: " + sunTime.toLocaleTimeString();
+
+document.getElementById("mooninfo").innerHTML =
+"الحساب بعد الشروق بساعتين: " + moonTime.toLocaleTimeString();
+
+});
+</script>
 
 </body>
 </html>
