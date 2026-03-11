@@ -38,12 +38,16 @@ let sunrise = new Date(data.results.sunrise);
 
 // قبل الشروق بساعة
 let sunTime = new Date(sunrise.getTime() - 60*60*1000);
+  let sunRA = sunTime.getHours() * 15;
+
+let manzila = getSunManzila(sunRA);
 
 // بعد الشروق بساعتين
 let moonTime = new Date(sunrise.getTime() + 2*60*60*1000);
 
 document.getElementById("suninfo").innerHTML =
-"الحساب يتم قبل الشروق بساعة: " + sunTime.toLocaleTimeString();
+  "الشمس قبل الشروق بساعة: " + sunTime.toLocaleTimeString() +
+"<br>منزلة الشمس: " + manzila;
 
 document.getElementById("mooninfo").innerHTML =
 "الحساب بعد الشروق بساعتين: " + moonTime.toLocaleTimeString();
