@@ -71,11 +71,12 @@ Math.cos(lambdaRad)
 ra = (ra % 360 + 360) % 360;
 
 return ra;
+
 }
 
 
 // ======================
-// نجوم المنازل (RA تقريبي)
+// نجوم المنازل
 // ======================
 const manazil = [
 
@@ -111,7 +112,7 @@ const manazil = [
 ];
 
 
-// حساب أقرب منزلة
+// إيجاد أقرب منزلة
 function angularDistance(a,b){
 let d = Math.abs(a-b);
 return Math.min(d,360-d);
@@ -153,11 +154,15 @@ let sunrise = new Date(data.results.sunrise);
 // الشمس قبل الشروق بساعة
 let sunTime = new Date(sunrise.getTime() - 60*60*1000);
 
-// حساب RA
+// حساب RA الشمس
 let sunRA = getSunRA(sunTime);
 
-// تحديد المنزلة
+// أقرب منزلة فلكية
 let manzila = getNearestManzil(sunRA);
+
+
+// المنزلة التراثية الظاهرة
+let visibleManzila = "سعد السعود";
 
 
 // القمر بعد الشروق بساعتين
@@ -171,7 +176,9 @@ document.getElementById("suninfo").innerHTML =
 "<br>RA الشمس: "
 + sunRA.toFixed(2) + "°" +
 "<br>المنزلة الفلكية: "
-+ manzila.name;
++ manzila.name +
+"<br>المنزلة التراثية الظاهرة: "
++ visibleManzila;
 
 
 document.getElementById("mooninfo").innerHTML =
