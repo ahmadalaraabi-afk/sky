@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>تقرير السماء - مكة</title>
+
 <style>
 body{
 font-family:Arial;
@@ -11,6 +12,7 @@ text-align:right;
 padding:40px;
 }
 </style>
+
 </head>
 
 <body>
@@ -26,77 +28,58 @@ padding:40px;
 <p id="mooninfo">جارٍ الحساب...</p>
 
 <script>
+
 // إحداثيات مكة
 const lat = 21.3891;
 const lon = 39.8579;
 
+// جدول منازل النجوم
+function getSunManzila(ra){
+
+const manazil = [
+"الشرطان","البطين","الثريا","الدبران","الهقعة","الهنعة",
+"الذراع","النثرة","الطرف","الجبهة","الزبرة","الصرفة",
+"العواء","السماك","الغفر","الزبانا","الإكليل","القلب",
+"الشولة","النعائم","البلدة","سعد الذابح","سعد بلع",
+"سعد السعود","سعد الأخبية","المقدم","المؤخر","الرشاء"
+];
+
+let index = Math.floor(ra / 13);
+
+return manazil[index];
+
+}
+
 // جلب وقت الشروق
 fetch(`https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&formatted=0`)
-.then(res=>res.json())
-.then(data=>{
+.then(res => res.json())
+.then(data => {
+
 let sunrise = new Date(data.results.sunrise);
 
-// قبل الشروق بساعة
+// الشمس قبل الشروق بساعة
 let sunTime = new Date(sunrise.getTime() - 60*60*1000);
-  let sunRA = sunTime.getHours() * 15;
 
+// حساب RA تقريبي
+let sunRA = sunTime.getHours() * 15;
+
+// تحديد المنزلة
 let manzila = getSunManzila(sunRA);
 
-// بعد الشروق بساعتين
+// القمر بعد الشروق بساعتين
 let moonTime = new Date(sunrise.getTime() + 2*60*60*1000);
 
+// عرض النتائج
 document.getElementById("suninfo").innerHTML =
-  "الشمس قبل الشروق بساعة: " + sunTime.toLocaleTimeString() +
+"الشمس قبل الشروق بساعة: " + sunTime.toLocaleTimeString() +
 "<br>منزلة الشمس: " + manzila;
 
 document.getElementById("mooninfo").innerHTML =
 "الحساب بعد الشروق بساعتين: " + moonTime.toLocaleTimeString();
 
 });
-</script>
-<script>
-
-function getSunManzila(ra){
-  const manazil = [
-  "الشرطان","البطين","الثريا","الدبران","الهقعة","الهنعة",
-  "الذراع","النثرة","الطرف","الجبهة","الزبرة","الصرفة",
-  "العواء","السماك","الغفر","الزبانا","الإكليل","القلب",
-  "الشولة","النعائم","البلدة","سعد الذابح","سعد بلع",
-  "سعد السعود","سعد الأخبية","المقدم","المؤخر","الرشاء"
-  ];
-
-  let index = Math.floor(ra / 13);
-  return manazil[index];
-}
 
 </script>
-  <script>
 
-async function getAstronomy(){
-
-const lat = 21.4225;
-const lon = 39.8262;
-
-let response = await fetch(
-"https://api.sunrise-sunset.org/json?lat="+lat+"&lng="+lon+"&formatted=0"
-);
-
-let data = await response.json();
-
-let sunrise = new Date(data.results.sunrise);
-
-let sunRA = sunrise.getHours() * 15;
-
-let manzila = getSunManzila(sunRA);
-
-document.getElementById("suninfo").innerHTML =
-"الشمس قبل الشروق بساعة: " + sunrise.toLocaleTimeString() +
-"<br>منزلة الشمس: " + manzila;
-
-}
-
-getAstronomy();
-
-</script>
 </body>
 </html>
