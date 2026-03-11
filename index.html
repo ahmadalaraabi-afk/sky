@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -6,7 +5,6 @@
 <title>تقرير السماء اليوم</title>
 
 <style>
-
 body{
 font-family:Tahoma;
 direction:rtl;
@@ -37,10 +35,8 @@ margin-top:0;
 margin-top:25px;
 line-height:1.9;
 }
-
 </style>
 </head>
-
 
 <body>
 
@@ -52,9 +48,81 @@ line-height:1.9;
 
 <div class="section">
 <h3>☀️ الشمس</h3>
-<p id="suninfo">جارٍ الحساب...</p>
+<p>
+المنزلة الفلكية: سعد الأخبية<br>
+المنزلة التراثية: سعد السعود
+</p>
 </div>
 
 <div class="section">
-<
-```
+<h3>🌙 القمر</h3>
+<p id="mooninfo">جارٍ الحساب...</p>
+</div>
+
+<div class="section">
+<h3>📅 التاريخ</h3>
+<p id="dateinfo"></p>
+</div>
+
+<div class="section">
+<h3>🌅 الشروق والغروب</h3>
+<p id="sunriseinfo"></p>
+</div>
+
+</div>
+
+<script>
+
+const moonManazil = [
+"الشرطين","البطين","الثريا","الدبران","الهقعة","الهنعة","الذراع",
+"النثرة","الطرفة","الجبهة","الزبرة","الصرفة","العواء","السماك",
+"الغفر","الزبانا","الإكليل","القلب","الشولة","النعائم","البلدة",
+"سعد الذابح","سعد بلع","سعد السعود","سعد الأخبية","المقدم",
+"المؤخر","الرشاء"
+];
+
+const moonConst = [
+"الحمل","الثور","الجوزاء","السرطان","الأسد","العذراء",
+"الميزان","العقرب","القوس","الجدي","الدلو","الحوت"
+];
+
+function getMoonManzila(){
+const start = new Date(2000,0,6);
+const now = new Date();
+const days = Math.floor((now-start)/(1000*60*60*24));
+const index = days % 28;
+return moonManazil[index];
+}
+
+function getMoonConst(){
+const now = new Date();
+const day = now.getDate();
+const index = Math.floor(day/2)%12;
+return moonConst[index];
+}
+
+document.getElementById("mooninfo").innerHTML =
+"القمر في كوكبة: " + getMoonConst() +
+"<br>منزلة القمر: " + getMoonManzila();
+
+const today = new Date();
+document.getElementById("dateinfo").innerHTML =
+today.toLocaleDateString("ar-SA");
+
+fetch("https://api.sunrise-sunset.org/json?lat=21.3891&lng=39.8579&formatted=0")
+.then(response => response.json())
+.then(data => {
+
+let sunrise = new Date(data.results.sunrise);
+let sunset = new Date(data.results.sunset);
+
+document.getElementById("sunriseinfo").innerHTML =
+"الشروق: " + sunrise.toLocaleTimeString("ar-SA") +
+"<br>الغروب: " + sunset.toLocaleTimeString("ar-SA");
+
+});
+
+</script>
+
+</body>
+</html>
