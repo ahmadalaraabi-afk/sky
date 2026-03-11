@@ -22,18 +22,46 @@ font-size:18px;
 
 <p>📍 مكة المكرمة</p>
 
+
+<h3>☀️ الشمس</h3>
+<p id="suninfo">جارٍ الحساب...</p>
+
+
 <h3>🌙 القمر</h3>
 <p id="mooninfo">جارٍ الحساب...</p>
 
+
 <script>
 
-// إحداثيات مكة
-const lat = 21.3891;
-const lon = 39.8579;
+// ======================
+// حساب موقع الشمس
+// ======================
+
+function getSunRA(date){
+
+const J2000 = new Date("2000-01-01T12:00:00Z");
+const days = (date - J2000) / 86400000;
+
+let L = 280.46 + 0.9856474 * days;
+let g = 357.528 + 0.9856003 * days;
+
+L = L % 360;
+g = g % 360;
+
+let lambda =
+L +
+1.915 * Math.sin(g*Math.PI/180) +
+0.020 * Math.sin(2*g*Math.PI/180);
+
+if(lambda < 0) lambda += 360;
+
+return lambda;
+
+}
 
 
 // ======================
-// حساب موقع القمر التقريبي
+// حساب موقع القمر
 // ======================
 
 function getMoonPosition(date){
@@ -47,7 +75,7 @@ let M = 134.963 + 13.064993 * D;
 L = L % 360;
 M = M % 360;
 
-let lambda = L + 6.289 * Math.sin(M * Math.PI/180);
+let lambda = L + 6.289 * Math.sin(M*Math.PI/180);
 
 if(lambda < 0) lambda += 360;
 
@@ -57,7 +85,7 @@ return lambda;
 
 
 // ======================
-// تحديد الكوكبة العربية
+// الكوكبات العربية
 // ======================
 
 function getConstellation(lambda){
@@ -79,7 +107,7 @@ return "الدلو";
 
 
 // ======================
-// جدول منازل القمر
+// منازل القمر
 // ======================
 
 const manazil = [
@@ -115,10 +143,7 @@ const manazil = [
 
 ];
 
-
-// تحديد منزلة القمر
-
-function getMoonManzil(lambda){
+function getManzil(lambda){
 
 let nearest = manazil[0];
 let minDiff = Math.abs(lambda - manazil[0].deg);
@@ -146,18 +171,28 @@ return nearest.name;
 
 let now = new Date();
 
+// الشمس
+let sunLambda = getSunRA(now);
+let sunManzil = getManzil(sunLambda);
+
+// القمر
 let moonLambda = getMoonPosition(now);
-
-let constellation = getConstellation(moonLambda);
-
-let manzil = getMoonManzil(moonLambda);
+let moonConstellation = getConstellation(moonLambda);
+let moonManzil = getManzil(moonLambda);
 
 
-// عرض النتيجة
+// ======================
+// عرض النتائج
+// ======================
+
+document.getElementById("suninfo").innerHTML =
+"المنزلة الفلكية: " + sunManzil +
+"<br>المنزلة التراثية الظاهرة: سعد السعود";
+
 
 document.getElementById("mooninfo").innerHTML =
-"القمر في كوكبة: " + constellation +
-"<br>منزلة القمر: " + manzil;
+"القمر في كوكبة: " + moonConstellation +
+"<br>منزلة القمر: " + moonManzil;
 
 
 </script>
