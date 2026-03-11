@@ -35,48 +35,41 @@ const lon = 39.8579;
 
 
 // ======================
-// حساب RA الشمس
+// حساب RA الشمس (أدق)
 // ======================
-function getJulianDate(date){
-return (date/86400000)+2440587.5;
-}
-
 function getSunRA(date){
 
-const jd = getJulianDate(date);
-const n = jd - 2451545.0;
+const J2000 = new Date("2000-01-01T12:00:00Z");
+const days = (date - J2000) / 86400000;
 
-let L = 280.460 + 0.9856474 * n;
-let g = 357.528 + 0.9856003 * n;
+let L = 280.46 + 0.9856474 * days;
+let g = 357.528 + 0.9856003 * days;
 
-L = (L % 360 + 360) % 360;
-g = (g % 360 + 360) % 360;
+L = L % 360;
+g = g % 360;
 
-const lambda =
+let lambda =
 L +
 1.915 * Math.sin(g * Math.PI/180) +
 0.020 * Math.sin(2*g * Math.PI/180);
 
-const epsilon = 23.439 - 0.0000004 * n;
+let epsilon = 23.439;
 
-const lambdaRad = lambda * Math.PI/180;
-const epsilonRad = epsilon * Math.PI/180;
-
-let ra =
+let RA =
 Math.atan2(
-Math.cos(epsilonRad)*Math.sin(lambdaRad),
-Math.cos(lambdaRad)
+Math.cos(epsilon*Math.PI/180) * Math.sin(lambda*Math.PI/180),
+Math.cos(lambda*Math.PI/180)
 ) * 180/Math.PI;
 
-ra = (ra % 360 + 360) % 360;
+if(RA < 0) RA += 360;
 
-return ra;
+return RA;
 
 }
 
 
 // ======================
-// نجوم المنازل
+// جدول منازل القمر
 // ======================
 const manazil = [
 
@@ -111,7 +104,10 @@ const manazil = [
 
 ];
 
+
+// ======================
 // إيجاد أقرب منزلة
+// ======================
 function angularDistance(a,b){
 let d = Math.abs(a-b);
 return Math.min(d,360-d);
@@ -127,10 +123,8 @@ for(const m of manazil){
 let diff = angularDistance(ra,m.ra);
 
 if(diff < minDiff){
-
 minDiff = diff;
 nearest = m;
-
 }
 
 }
@@ -138,7 +132,6 @@ nearest = m;
 return nearest;
 
 }
-
 
 
 // ======================
@@ -153,10 +146,10 @@ let sunrise = new Date(data.results.sunrise);
 // الشمس قبل الشروق بساعة
 let sunTime = new Date(sunrise.getTime() - 60*60*1000);
 
-// حساب RA الشمس
+// حساب RA
 let sunRA = getSunRA(sunTime);
 
-// أقرب منزلة فلكية
+// أقرب منزلة
 let manzila = getNearestManzil(sunRA);
 
 
