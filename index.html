@@ -19,13 +19,10 @@ font-size:18px;
 <body>
 
 <h2>🌌 تقرير السماء اليوم</h2>
-
 <p>📍 مكة المكرمة</p>
-
 
 <h3>☀️ الشمس</h3>
 <p id="suninfo">جارٍ الحساب...</p>
-
 
 <h3>🌙 القمر</h3>
 <p id="mooninfo">جارٍ الحساب...</p>
@@ -34,7 +31,7 @@ font-size:18px;
 <script>
 
 // ======================
-// حساب موقع الشمس
+// حساب RA الشمس
 // ======================
 
 function getSunRA(date){
@@ -53,9 +50,17 @@ L +
 1.915 * Math.sin(g*Math.PI/180) +
 0.020 * Math.sin(2*g*Math.PI/180);
 
-if(lambda < 0) lambda += 360;
+let epsilon = 23.439;
 
-return lambda;
+let RA =
+Math.atan2(
+Math.cos(epsilon*Math.PI/180)*Math.sin(lambda*Math.PI/180),
+Math.cos(lambda*Math.PI/180)
+) * 180/Math.PI;
+
+if(RA < 0) RA += 360;
+
+return RA;
 
 }
 
@@ -107,7 +112,7 @@ return "الدلو";
 
 
 // ======================
-// منازل القمر
+// جدول المنازل
 // ======================
 
 const manazil = [
@@ -143,14 +148,14 @@ const manazil = [
 
 ];
 
-function getManzil(lambda){
+function getManzil(angle){
 
 let nearest = manazil[0];
-let minDiff = Math.abs(lambda - manazil[0].deg);
+let minDiff = Math.abs(angle - manazil[0].deg);
 
 for(const m of manazil){
 
-let diff = Math.abs(lambda - m.deg);
+let diff = Math.abs(angle - m.deg);
 
 if(diff < minDiff){
 minDiff = diff;
@@ -172,8 +177,8 @@ return nearest.name;
 let now = new Date();
 
 // الشمس
-let sunLambda = getSunRA(now);
-let sunManzil = getManzil(sunLambda);
+let sunRA = getSunRA(now);
+let sunManzil = getManzil(sunRA);
 
 // القمر
 let moonLambda = getMoonPosition(now);
