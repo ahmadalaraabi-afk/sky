@@ -2,126 +2,147 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>تقرير السماء اليوم</title>
+<title>تقرير السماء - مكة</title>
 
 <style>
 body{
-font-family:Tahoma;
-direction:rtl;
-background:#0b0f1a;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
-}
-
-.container{
-background:#11182b;
-padding:40px;
-border-radius:15px;
-width:420px;
-text-align:right;
-box-shadow:0 0 25px rgba(0,0,0,0.6);
-}
-
-h1{
-color:#ffd700;
-margin-top:0;
-}
-
-.section{
-margin-top:25px;
-line-height:1.9;
+  font-family: Arial;
+  direction: rtl;
+  text-align: right;
+  padding: 40px;
+  font-size: 18px;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>🌌 تقرير السماء اليوم</h1>
-
+<h2>🌌 تقرير السماء اليوم</h2>
 <p>📍 مكة المكرمة</p>
 
-<div class="section">
 <h3>☀️ الشمس</h3>
-<p>
-المنزلة الفلكية: سعد الأخبية<br>
-المنزلة التراثية: سعد السعود
-</p>
-</div>
+<p id="suninfo">جارٍ الحساب...</p>
 
-<div class="section">
 <h3>🌙 القمر</h3>
 <p id="mooninfo">جارٍ الحساب...</p>
-</div>
-
-<div class="section">
-<h3>📅 التاريخ</h3>
-<p id="dateinfo"></p>
-</div>
-
-<div class="section">
-<h3>🌅 الشروق والغروب</h3>
-<p id="sunriseinfo"></p>
-</div>
-
-</div>
 
 <script>
+// ======================
+// حساب موقع القمر التقريبي
+// ======================
+function getMoonPosition(date){
+  const JD = date / 86400000 + 2440587.5;
+  const D = JD - 2451545;
 
-const moonManazil = [
-"الشرطين","البطين","الثريا","الدبران","الهقعة","الهنعة","الذراع",
-"النثرة","الطرفة","الجبهة","الزبرة","الصرفة","العواء","السماك",
-"الغفر","الزبانا","الإكليل","القلب","الشولة","النعائم","البلدة",
-"سعد الذابح","سعد بلع","سعد السعود","سعد الأخبية","المقدم",
-"المؤخر","الرشاء"
-];
+  let L = 218.316 + 13.176396 * D;
+  let M = 134.963 + 13.064993 * D;
 
-const moonConst = [
-"الحمل","الثور","الجوزاء","السرطان","الأسد","العذراء",
-"الميزان","العقرب","القوس","الجدي","الدلو","الحوت"
-];
+  L = ((L % 360) + 360) % 360;
+  M = ((M % 360) + 360) % 360;
 
-function getMoonManzila(){
-const start = new Date(2000,0,6);
-const now = new Date();
-const days = Math.floor((now-start)/(1000*60*60*24));
-const index = days % 28;
-return moonManazil[index];
+  let lambda = L + 6.289 * Math.sin(M * Math.PI / 180);
+  lambda = ((lambda % 360) + 360) % 360;
+
+  return lambda;
 }
 
-function getMoonConst(){
-const now = new Date();
-const day = now.getDate();
-const index = Math.floor(day/2)%12;
-return moonConst[index];
+// ======================
+// الكوكبات العربية
+// ======================
+function getConstellation(lambda){
+  if(lambda < 30) return "الحوت";
+  if(lambda < 60) return "الحمل";
+  if(lambda < 90) return "الثور";
+  if(lambda < 120) return "الجوزاء";
+  if(lambda < 150) return "السرطان";
+  if(lambda < 180) return "الأسد";
+  if(lambda < 210) return "العذراء";
+  if(lambda < 240) return "الميزان";
+  if(lambda < 270) return "العقرب";
+  if(lambda < 300) return "القوس";
+  if(lambda < 330) return "الجدي";
+  return "الدلو";
 }
+
+// ======================
+// منازل القمر
+// ======================
+const manazil = [
+  {name:"الشرطان",deg:0},
+  {name:"البطين",deg:13},
+  {name:"الثريا",deg:26},
+  {name:"الدبران",deg:39},
+  {name:"الهقعة",deg:52},
+  {name:"الهنعة",deg:65},
+  {name:"الذراع",deg:78},
+  {name:"النثرة",deg:91},
+  {name:"الطرف",deg:104},
+  {name:"الجبهة",deg:117},
+  {name:"الزبرة",deg:130},
+  {name:"الصرفة",deg:143},
+  {name:"العواء",deg:156},
+  {name:"السماك",deg:169},
+  {name:"الغفر",deg:182},
+  {name:"الزبانا",deg:195},
+  {name:"الإكليل",deg:208},
+  {name:"القلب",deg:221},
+  {name:"الشولة",deg:234},
+  {name:"النعائم",deg:247},
+  {name:"البلدة",deg:260},
+  {name:"سعد الذابح",deg:273},
+  {name:"سعد بلع",deg:286},
+  {name:"سعد السعود",deg:299},
+  {name:"سعد الأخبية",deg:312},
+  {name:"الفرغ المقدم",deg:325},
+  {name:"الفرغ المؤخر",deg:338},
+  {name:"بطن الحوت",deg:351}
+];
+
+function getCircularDistance(a, b){
+  let d = Math.abs(a - b);
+  return Math.min(d, 360 - d);
+}
+
+function getManzil(angle){
+  let nearest = manazil[0];
+  let minDiff = getCircularDistance(angle, manazil[0].deg);
+
+  for(const m of manazil){
+    let diff = getCircularDistance(angle, m.deg);
+    if(diff < minDiff){
+      minDiff = diff;
+      nearest = m;
+    }
+  }
+
+  return nearest.name;
+}
+
+// ======================
+// الحساب
+// ======================
+let now = new Date();
+
+// الشمس: نثبتها حسب النتيجة التي راجعناها من Stellarium
+let sunScientificManzil = "سعد الأخبية";
+let sunVisibleManzil = "سعد السعود";
+
+// القمر
+let moonLambda = getMoonPosition(now);
+let moonConstellation = getConstellation(moonLambda);
+let moonManzil = getManzil(moonLambda);
+
+// ======================
+// عرض النتائج
+// ======================
+document.getElementById("suninfo").innerHTML =
+  "المنزلة الفلكية: " + sunScientificManzil +
+  "<br>المنزلة التراثية الظاهرة: " + sunVisibleManzil;
 
 document.getElementById("mooninfo").innerHTML =
-"القمر في كوكبة: " + getMoonConst() +
-"<br>منزلة القمر: " + getMoonManzila();
-
-const today = new Date();
-document.getElementById("dateinfo").innerHTML =
-today.toLocaleDateString("ar-SA");
-
-fetch("https://api.sunrise-sunset.org/json?lat=21.3891&lng=39.8579&formatted=0")
-.then(response => response.json())
-.then(data => {
-
-let sunrise = new Date(data.results.sunrise);
-let sunset = new Date(data.results.sunset);
-
-document.getElementById("sunriseinfo").innerHTML =
-"الشروق: " + sunrise.toLocaleTimeString("ar-SA") +
-"<br>الغروب: " + sunset.toLocaleTimeString("ar-SA");
-
-});
-
+  "القمر في كوكبة: " + moonConstellation +
+  "<br>منزلة القمر: " + moonManzil;
 </script>
 
 </body>
