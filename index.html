@@ -66,5 +66,33 @@ function getSunManzila(ra){
 }
 
 </script>
+  <script>
+
+async function getAstronomy(){
+
+const lat = 21.4225;
+const lon = 39.8262;
+
+let response = await fetch(
+"https://api.sunrise-sunset.org/json?lat="+lat+"&lng="+lon+"&formatted=0"
+);
+
+let data = await response.json();
+
+let sunrise = new Date(data.results.sunrise);
+
+let sunRA = sunrise.getHours() * 15;
+
+let manzila = getSunManzila(sunRA);
+
+document.getElementById("suninfo").innerHTML =
+"الشمس قبل الشروق بساعة: " + sunrise.toLocaleTimeString() +
+"<br>منزلة الشمس: " + manzila;
+
+}
+
+getAstronomy();
+
+</script>
 </body>
 </html>
