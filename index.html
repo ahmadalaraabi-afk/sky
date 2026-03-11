@@ -2,147 +2,179 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>تقرير السماء - مكة</title>
+<title>تقرير السماء اليوم</title>
 
 <style>
+
 body{
-  font-family: Arial;
-  direction: rtl;
-  text-align: right;
-  padding: 40px;
-  font-size: 18px;
+font-family:Arial;
+direction:rtl;
+text-align:center;
+background:#021028;
+color:white;
+padding:40px;
 }
+
+h1{
+color:#FFD700;
+}
+
+.box{
+margin:20px auto;
+padding:20px;
+background:#031a3a;
+width:350px;
+border-radius:10px;
+}
+
+button{
+background:#1DA1F2;
+border:none;
+padding:12px 20px;
+color:white;
+font-size:16px;
+border-radius:8px;
+cursor:pointer;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h2>🌌 تقرير السماء اليوم</h2>
-<p>📍 مكة المكرمة</p>
+<h1>🔭 تقرير السماء اليوم</h1>
 
-<h3>☀️ الشمس</h3>
-<p id="suninfo">جارٍ الحساب...</p>
+<div class="box">
 
-<h3>🌙 القمر</h3>
-<p id="mooninfo">جارٍ الحساب...</p>
+📍 مكة المكرمة
+
+<br><br>
+
+☀️ <b>الشمس</b>
+
+<p id="sun"></p>
+
+<br>
+
+🌙 <b>القمر</b>
+
+<p id="moon"></p>
+
+<br>
+
+📅 <b>التاريخ</b>
+
+<p id="date"></p>
+
+<br>
+
+🌅 <b>الشروق والغروب</b>
+
+<p id="sunrise"></p>
+
+<br>
+
+<button onclick="tweet()">🐦 نشر التقرير في تويتر</button>
+
+</div>
+
 
 <script>
-// ======================
-// حساب موقع القمر التقريبي
-// ======================
-function getMoonPosition(date){
-  const JD = date / 86400000 + 2440587.5;
-  const D = JD - 2451545;
 
-  let L = 218.316 + 13.176396 * D;
-  let M = 134.963 + 13.064993 * D;
+// التاريخ
 
-  L = ((L % 360) + 360) % 360;
-  M = ((M % 360) + 360) % 360;
+let today=new Date()
 
-  let lambda = L + 6.289 * Math.sin(M * Math.PI / 180);
-  lambda = ((lambda % 360) + 360) % 360;
+document.getElementById("date").innerHTML=
+today.toLocaleDateString('ar-SA')
 
-  return lambda;
+
+// منازل الشمس
+
+function sunManzil(day){
+
+const manazil=[
+"الشرطان","البطين","الثريا","الدبران","الهقعة","الهنعة",
+"الذراع","النثرة","الطرف","الجبهة","الزبرة","الصرفة",
+"العواء","السماك","الغفر","الزبانا","الإكليل","القلب",
+"الشولة","النعائم","البلدة","سعد الذابح","سعد بلع",
+"سعد السعود","سعد الأخبية","المقدم","المؤخر","الرشاء"
+]
+
+return manazil[Math.floor((day%365)/13)]
+
 }
 
-// ======================
-// الكوكبات العربية
-// ======================
-function getConstellation(lambda){
-  if(lambda < 30) return "الحوت";
-  if(lambda < 60) return "الحمل";
-  if(lambda < 90) return "الثور";
-  if(lambda < 120) return "الجوزاء";
-  if(lambda < 150) return "السرطان";
-  if(lambda < 180) return "الأسد";
-  if(lambda < 210) return "العذراء";
-  if(lambda < 240) return "الميزان";
-  if(lambda < 270) return "العقرب";
-  if(lambda < 300) return "القوس";
-  if(lambda < 330) return "الجدي";
-  return "الدلو";
-}
+let dayOfYear=Math.floor(
+(today-new Date(today.getFullYear(),0,0))/86400000
+)
 
-// ======================
-// منازل القمر
-// ======================
-const manazil = [
-  {name:"الشرطان",deg:0},
-  {name:"البطين",deg:13},
-  {name:"الثريا",deg:26},
-  {name:"الدبران",deg:39},
-  {name:"الهقعة",deg:52},
-  {name:"الهنعة",deg:65},
-  {name:"الذراع",deg:78},
-  {name:"النثرة",deg:91},
-  {name:"الطرف",deg:104},
-  {name:"الجبهة",deg:117},
-  {name:"الزبرة",deg:130},
-  {name:"الصرفة",deg:143},
-  {name:"العواء",deg:156},
-  {name:"السماك",deg:169},
-  {name:"الغفر",deg:182},
-  {name:"الزبانا",deg:195},
-  {name:"الإكليل",deg:208},
-  {name:"القلب",deg:221},
-  {name:"الشولة",deg:234},
-  {name:"النعائم",deg:247},
-  {name:"البلدة",deg:260},
-  {name:"سعد الذابح",deg:273},
-  {name:"سعد بلع",deg:286},
-  {name:"سعد السعود",deg:299},
-  {name:"سعد الأخبية",deg:312},
-  {name:"الفرغ المقدم",deg:325},
-  {name:"الفرغ المؤخر",deg:338},
-  {name:"بطن الحوت",deg:351}
-];
+let sunM=sunManzil(dayOfYear)
 
-function getCircularDistance(a, b){
-  let d = Math.abs(a - b);
-  return Math.min(d, 360 - d);
-}
+document.getElementById("sun").innerHTML=
+"المنزلة الفلكية: "+sunM+
+"<br>المنزلة التراثية: سعد السعود"
 
-function getManzil(angle){
-  let nearest = manazil[0];
-  let minDiff = getCircularDistance(angle, manazil[0].deg);
-
-  for(const m of manazil){
-    let diff = getCircularDistance(angle, m.deg);
-    if(diff < minDiff){
-      minDiff = diff;
-      nearest = m;
-    }
-  }
-
-  return nearest.name;
-}
-
-// ======================
-// الحساب
-// ======================
-let now = new Date();
-
-// الشمس: نثبتها حسب النتيجة التي راجعناها من Stellarium
-let sunScientificManzil = "سعد الأخبية";
-let sunVisibleManzil = "سعد السعود";
 
 // القمر
-let moonLambda = getMoonPosition(now);
-let moonConstellation = getConstellation(moonLambda);
-let moonManzil = getManzil(moonLambda);
 
-// ======================
-// عرض النتائج
-// ======================
-document.getElementById("suninfo").innerHTML =
-  "المنزلة الفلكية: " + sunScientificManzil +
-  "<br>المنزلة التراثية الظاهرة: " + sunVisibleManzil;
+const constellations=[
+"الحمل","الثور","الجوزاء","السرطان","الأسد","العذراء",
+"الميزان","العقرب","القوس","الجدي","الدلو","الحوت"
+]
 
-document.getElementById("mooninfo").innerHTML =
-  "القمر في كوكبة: " + moonConstellation +
-  "<br>منزلة القمر: " + moonManzil;
+let moonConst=constellations[today.getDate()%12]
+
+const moonManazil=[
+"الشرطان","البطين","الثريا","الدبران","الهقعة","الهنعة",
+"الذراع","النثرة","الطرف","الجبهة","الزبرة","الصرفة",
+"العواء","السماك","الغفر","الزبانا","الإكليل","القلب",
+"الشولة","النعائم","البلدة","سعد الذابح","سعد بلع",
+"سعد السعود","سعد الأخبية","المقدم","المؤخر","الرشاء"
+]
+
+let moonM=moonManazil[today.getDate()%28]
+
+document.getElementById("moon").innerHTML=
+"القمر في كوكبة: "+moonConst+
+"<br>منزلة القمر: "+moonM
+
+
+// الشروق والغروب
+
+fetch("https://api.sunrise-sunset.org/json?lat=21.3891&lng=39.8579&formatted=0")
+.then(res=>res.json())
+.then(data=>{
+
+let rise=new Date(data.results.sunrise)
+let set=new Date(data.results.sunset)
+
+document.getElementById("sunrise").innerHTML=
+"الشروق: "+rise.toLocaleTimeString('ar-SA')+
+"<br>الغروب: "+set.toLocaleTimeString('ar-SA')
+
+})
+
+
+// زر تويتر
+
+function tweet(){
+
+let text=
+"🌌 تقرير السماء اليوم فوق مكة\n"+
+"☀️ الشمس: "+sunM+"\n"+
+"🌙 القمر في كوكبة: "+moonConst+"\n"+
+"⭐ منزلة القمر: "+moonM+"\n"+
+"https://ahmadalaraabi-afk.github.io/sky"
+
+let url=
+"https://twitter.com/intent/tweet?text="+encodeURIComponent(text)
+
+window.open(url)
+
+}
+
 </script>
 
 </body>
