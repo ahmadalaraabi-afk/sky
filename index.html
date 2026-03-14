@@ -141,9 +141,15 @@ document.getElementById("moon").innerHTML=
 "<br>منزلة القمر: "+moonM
 
 
-// الشروق والغروب
 
-fetch("https://api.sunrise-sunset.org/json?lat=21.3891&lng=39.8579&formatted=0")
+// ===== شروق وغروب الشمس غداً =====
+
+let tomorrow=new Date()
+tomorrow.setDate(tomorrow.getDate()+1)
+
+let date=tomorrow.toISOString().split("T")[0]
+
+fetch(`https://api.sunrise-sunset.org/json?lat=21.3891&lng=39.8579&date=${date}&formatted=0`)
 .then(res=>res.json())
 .then(data=>{
 
@@ -151,8 +157,11 @@ let rise=new Date(data.results.sunrise)
 let set=new Date(data.results.sunset)
 
 document.getElementById("sunrise").innerHTML=
-"الشروق: "+rise.toLocaleTimeString('ar-SA')+
-"<br>الغروب: "+set.toLocaleTimeString('ar-SA')
+"🌅 شروق الشمس غداً: "+
+rise.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})+
+
+"<br>🌇 غروب الشمس غداً: "+
+set.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})
 
 })
 
