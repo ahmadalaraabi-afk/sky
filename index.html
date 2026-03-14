@@ -106,8 +106,7 @@ let dayOfYear=Math.floor(
 
 // حساب منزلة الشمس
 
-let sunIndex=Math.floor((dayOfYear%365)/13)
-
+let sunIndex=Math.floor(((dayOfYear+80)%365)/13)
 let sunM=manazil[sunIndex]
 
 // المنزلة التراثية (التي قبلها)
