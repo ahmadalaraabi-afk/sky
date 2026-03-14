@@ -55,6 +55,8 @@ cursor:pointer;
 
 <p id="sun"></p>
 
+<p id="sunTimes"></p>
+
 <br>
 
 🌙 <b>القمر</b>
@@ -66,12 +68,6 @@ cursor:pointer;
 📅 <b>التاريخ</b>
 
 <p id="date"></p>
-
-<br>
-
-🌅 <b>الشروق والغروب</b>
-
-<p id="sunrise"></p>
 
 <br>
 
@@ -142,7 +138,7 @@ document.getElementById("moon").innerHTML=
 
 
 
-// ===== شروق وغروب الشمس غداً =====
+// شروق وغروب الشمس غداً
 
 let tomorrow=new Date()
 tomorrow.setDate(tomorrow.getDate()+1)
@@ -156,16 +152,15 @@ fetch(`https://api.sunrise-sunset.org/json?lat=21.3891&lng=39.8579&date=${date}&
 let rise=new Date(data.results.sunrise)
 let set=new Date(data.results.sunset)
 
-// تحويل إلى توقيت مكة
 rise.setHours(rise.getHours()+3)
 set.setHours(set.getHours()+3)
 
-document.getElementById("sunrise").innerHTML=
-"🌅 شروق الشمس غداً<br>"+ 
+document.getElementById("sunTimes").innerHTML=
+"🌅 شروق الشمس غداً: "+
 rise.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})+
-
-"<br><br>🌇 غروب الشمس غداً<br>"+
+"<br>🌇 غروب الشمس غداً: "+
 set.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})
+
 })
 
 
