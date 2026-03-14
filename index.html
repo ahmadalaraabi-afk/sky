@@ -161,12 +161,11 @@ rise.setHours(rise.getHours()+3)
 set.setHours(set.getHours()+3)
 
 document.getElementById("sunrise").innerHTML=
-"🌅 شروق الشمس غداً: "+
+"🌅 شروق الشمس غداً<br>"+ 
 rise.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})+
 
-"<br>🌇 غروب الشمس غداً: "+
+"<br><br>🌇 غروب الشمس غداً<br>"+
 set.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})
-
 })
 
 
