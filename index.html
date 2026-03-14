@@ -86,31 +86,45 @@ document.getElementById("date").innerHTML=
 today.toLocaleDateString('ar-SA')
 
 
-// منازل الشمس
-
-function sunManzil(day){
+// منازل القمر
 
 const manazil=[
 "الشرطان","البطين","الثريا","الدبران","الهقعة","الهنعة",
 "الذراع","النثرة","الطرف","الجبهة","الزبرة","الصرفة",
 "العواء","السماك","الغفر","الزبانا","الإكليل","القلب",
 "الشولة","النعائم","البلدة","سعد الذابح","سعد بلع",
-"سعد السعود","سعد الأخبية","المقدم","المؤخر","الرشاء"
+"سعد السعود","سعد الأخبية","الفرغ المقدم","الفرغ المؤخر","بطن الحوت"
 ]
 
-return manazil[Math.floor((day%365)/13)]
 
-}
+// حساب يوم السنة
 
 let dayOfYear=Math.floor(
 (today-new Date(today.getFullYear(),0,0))/86400000
 )
 
-let sunM=sunManzil(dayOfYear)
+
+// حساب منزلة الشمس
+
+let sunIndex=Math.floor((dayOfYear%365)/13)
+
+let sunM=manazil[sunIndex]
+
+// المنزلة التراثية (التي قبلها)
+
+let heritageIndex=sunIndex-1
+
+if(heritageIndex<0){
+heritageIndex=27
+}
+
+let heritageManzil=manazil[heritageIndex]
+
 
 document.getElementById("sun").innerHTML=
 "المنزلة الفلكية: "+sunM+
-"<br>المنزلة التراثية: سعد السعود"
+"<br>المنزلة التراثية: "+heritageManzil
+
 
 
 // القمر
@@ -122,15 +136,7 @@ const constellations=[
 
 let moonConst=constellations[today.getDate()%12]
 
-const moonManazil=[
-"الشرطان","البطين","الثريا","الدبران","الهقعة","الهنعة",
-"الذراع","النثرة","الطرف","الجبهة","الزبرة","الصرفة",
-"العواء","السماك","الغفر","الزبانا","الإكليل","القلب",
-"الشولة","النعائم","البلدة","سعد الذابح","سعد بلع",
-"سعد السعود","سعد الأخبية","المقدم","المؤخر","الرشاء"
-]
-
-let moonM=moonManazil[today.getDate()%28]
+let moonM=manazil[today.getDate()%28]
 
 document.getElementById("moon").innerHTML=
 "القمر في كوكبة: "+moonConst+
@@ -141,6 +147,7 @@ document.getElementById("moon").innerHTML=
 // شروق وغروب الشمس غداً
 
 let tomorrow=new Date()
+
 tomorrow.setDate(tomorrow.getDate()+1)
 
 let date=tomorrow.toISOString().split("T")[0]
@@ -167,7 +174,8 @@ function tweet(){
 
 let text=
 "🌌 تقرير السماء اليوم فوق مكة\n"+
-"☀️ الشمس: "+sunM+"\n"+
+"☀️ المنزلة الفلكية: "+sunM+"\n"+
+"⭐ المنزلة التراثية: "+heritageManzil+"\n"+
 "🌙 القمر في كوكبة: "+moonConst+"\n"+
 "⭐ منزلة القمر: "+moonM+"\n"+
 "https://ahmadalaraabi-afk.github.io/sky"
