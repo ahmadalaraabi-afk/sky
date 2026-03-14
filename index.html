@@ -104,26 +104,20 @@ let dayOfYear=Math.floor(
 )
 
 
-// حساب منزلة الشمس
+// حساب منزلة الشمس بطريقة أدق
 
 let sunIndex=Math.floor(((dayOfYear+80)%365)/13)
+
 let sunM=manazil[sunIndex]
 
-// المنزلة التراثية (التي قبلها)
-
 let heritageIndex=sunIndex-1
-
-if(heritageIndex<0){
-heritageIndex=27
-}
+if(heritageIndex<0){heritageIndex=27}
 
 let heritageManzil=manazil[heritageIndex]
-
 
 document.getElementById("sun").innerHTML=
 "المنزلة الفلكية: "+sunM+
 "<br>المنزلة التراثية: "+heritageManzil
-
 
 
 // القمر
